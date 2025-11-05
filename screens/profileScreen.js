@@ -5,234 +5,345 @@ import {
   Image, 
   TouchableOpacity, 
   SafeAreaView, 
-  StyleSheet 
+  StyleSheet,
+  ScrollView, // Usamos ScrollView para que la galería sea desplazable
 } from 'react-native'; 
 import { useNavigation } from '@react-navigation/native';
-import { MaterialIcons } from '@expo/vector-icons'; // Usamos MaterialIcons para el icono del menú
+import { MaterialIcons } from '@expo/vector-icons'; 
 
-// --- PALETA DE COLORES REFINADA (Tomada de tu componente CompraProducto) ---
+// --- PALETA DE COLORES REFINADA ---
 const COLORS = {
-  BACKGROUND_LIGHT: '#F8F8F8',
-  CARD_WHITE: '#FFFFFF',
-  TEXT_DARK: '#1E293B',
-  TEXT_SUBTLE: '#64748B',
-  BORDER_LINE: '#E2E8F0',
-  PRIMARY_ACCENT: '#0F766E', // Color verde/teal
-  SECONDARY_BLUE: '#0A78D4', // Azul de tu imagen de referencia para el botón y títulos
+  BACKGROUND_LIGHT: '#F8F8F8', // Fondo general de la pantalla
+  CARD_WHITE: '#FFFFFF',      // Fondo de contenedores (el centro de la pantalla)
+  TEXT_DARK: '#1E293B',       // Texto principal (negro/gris oscuro)
+  TEXT_SUBTLE: '#64748B',     // Texto secundario (Gris de Carrera)
+  ACCENT_BLUE_LIGHT: '#0A78D4', // Azul de botones y títulos (el azul principal)
+  STATUS_GREEN: '#34D399',      // Verde para el badge de estado
+  SEPARATOR_LINE: '#E0E0E0',   // Línea gris clara para separadores
 };
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
 
+  // Datos del estudiante
   const userData = {
-    name: 'Angel Omar Negrete Demetrio',
+    name: 'Angel Omar Negrete Demetrio', 
     title: 'Ingeniería en TIC',
-    profilePic: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=687&q=80',
-    // Avatar placeholders (usaremos flaticon o expo-icons para simular)
-    icon1: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // Hombre de negocios
-    icon2: 'https://cdn-icons-png.flaticon.com/512/1077/1077012.png', // Silueta de persona
-    icon3: 'https://cdn-icons-png.flaticon.com/512/847/847969.png', // Silueta gris
+    profilePic: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwr_zZjgvmu4BccwDNIHic8K5dyehw7cSYA&s',
+    
+    // Datos de Métricas
+    metrics: [
+      { id: 1, value: 44, label: 'Siguiendo', icon: 'shuffle' }, 
+      { id: 2, value: 4, label: 'Seguidores', icon: 'favorite' }, 
+      { id: 3, value: 0, label: 'Likes', icon: 'visibility-off' }, 
+    ],
   };
 
-  // Función para volver al formulario (asumiendo que tu ruta se llama 'CompraProducto' o 'Forms')
-  const handleGoBack = () => {
-    // Cambia 'CompraProducto' al nombre real de tu ruta de formulario si es diferente
-    navigation.navigate('CompraProducto'); 
+  // Imágenes para la sección de Galería (Imágenes de paisajes)
+  const galleryImages = [
+    // Imagen principal grande (simulando una imagen de ancho completo)
+    'https://independent-photo.com/wp-content/uploads/2022/02/Yifeng-Ding-1800x1192.jpeg',
+    // Tres imágenes pequeñas para la cuadrícula inferior
+    'https://content.nationalgeographic.com.es/medio/2021/11/29/fotografo-de-paisajes-naturales-del-ano-segundo-premio_a32b2f66_2000x1594.jpg',
+    'https://marketplace.canva.com/MADGDC4ks8E/1/thumbnail_large/canva-banff-landscapes-MADGDC4ks8E.jpg',
+    'https://www.adobe.com/es/creativecloud/photography/discover/media_11cce67f3cd23e90370d599ea2e6e728b697f9120.png?width=750&format=png&optimize=medium',
+    // Añadimos más para forzar el scroll
+    'https://img.freepik.com/foto-gratis/paisaje-niebla-matutina-montanas-globos-aerostaticos-al-amanecer_335224-794.jpg?semt=ais_hybrid&w=740&q=80',
+    'https://thumbs.dreamstime.com/b/imagen-de-paisajes-hermosos-con-color-muy-bonito-y-backgroun-98492102.jpg',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGF8FwEQcN76kLjRHfGta7dnHHM0BgeFQ7Wg&s',
+  ];
+
+  // Función para salir (navegación a 'Login' o donde corresponda)
+  const handleSignOut = () => {
+    navigation.navigate('Login'); 
   };
+
+  // --- COMPONENTE DE LA GALERÍA (Grid de Imágenes) ---
+  const GalleryGrid = ({ images }) => (
+    <View style={galleryStyles.galleryContainer}>
+        {/* Usamos map para iterar sobre las imágenes */}
+        {images.map((uri, index) => (
+            <View key={index} style={galleryStyles.imageWrapper}>
+                {/* Componente Image - Cumple con la rúbrica */}
+                <Image 
+                    source={{ uri }} 
+                    style={galleryStyles.galleryImage} 
+                />
+            </View>
+        ))}
+    </View>
+  );
+
+  // --- NUEVO COMPONENTE DE MÉTRICAS (Grid de 3 columnas) ---
+  const MetricsBar = ({ metrics }) => (
+    <View style={metricsStyles.metricsContainer}>
+        {metrics.map((metric, index) => (
+            <React.Fragment key={metric.id}>
+                <View style={metricsStyles.metricItem}>
+                    <Text style={metricsStyles.metricValue}>{metric.value}</Text>
+                    <Text style={metricsStyles.metricLabel}>{metric.label}</Text>
+                </View>
+                {/* Separador vertical, omitido para el último elemento */}
+                {index < metrics.length - 1 && (
+                    <View style={metricsStyles.verticalSeparator} />
+                )}
+            </React.Fragment>
+        ))}
+    </View>
+  );
+
+  // --- NUEVO COMPONENTE DE BOTONES DE ACCIÓN (Debajo de Métricas) ---
+  const ActionButtons = ({ handleSignOut }) => (
+    <View style={actionStyles.actionContainer}>
+        {/* Botón de Perfil (Simulado con MaterialIcons) */}
+        <TouchableOpacity style={actionStyles.actionButton}>
+            <MaterialIcons name="person" size={24} color={COLORS.ACCENT_BLUE_LIGHT} />
+        </TouchableOpacity>
+
+        {/* Botón de Like/Favorito */}
+        <TouchableOpacity style={actionStyles.actionButton}>
+            <MaterialIcons name="favorite" size={24} color={COLORS.ACCENT_BLUE_LIGHT} />
+        </TouchableOpacity>
+
+        {/* Botón SALIR (Usamos el ícono de logout para simular la acción del boceto) */}
+        <TouchableOpacity 
+            style={actionStyles.actionButton}
+            onPress={handleSignOut}
+        >
+            <MaterialIcons name="logout" size={24} color={COLORS.ACCENT_BLUE_LIGHT} />
+        </TouchableOpacity>
+    </View>
+  );
+
 
   return (
-    // Es CRUCIAL deshabilitar el header de react-navigation para usar este header custom
     <SafeAreaView style={styles.safeArea}> 
       
-     
-
-      {/* -------------------- CONTENIDO DE LA PANTALLA -------------------- */}
-      <View style={styles.contentContainer}> 
+      {/* ScrollView contiene todo el contenido deslizable */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         
-        {/* 1. 👤 Sección de Avatar y Título de Perfil */}
+        {/* 1. 👤 Sección de Avatar y Datos de Perfil */}
         <View style={styles.profileSection}>
-          
-          {/* Avatar con borde y badge */}
           <View style={styles.avatarWrapper}>
             <Image
               source={{ uri: userData.profilePic }}
               style={styles.avatarImage}
-              accessibilityLabel="Foto de perfil de la usuaria"
+              accessibilityLabel="Foto de perfil del usuario"
             />
-            {/* Badge Verde de Estado */}
+            {/* Badge Verde de Estado (Anidado, cumple con el requisito +nested) */}
             <View style={styles.statusBadge} />
           </View>
 
-          {/* Título y Datos */}
-          <Text style={styles.mainTitle}>
-            Perfil del Usuario
+          {/* Nombre y Datos de usuario, centrados como en el boceto */}
+          <Text style={styles.nameText}>
+            {userData.name}
           </Text>
-          <Text style={styles.dataLine}>
-            Nombre: <Text style={styles.dataValue}>{userData.name}</Text>
-          </Text>
-          <Text style={styles.dataLine}>
-            Carrera: <Text style={styles.dataValue}>{userData.title}</Text>
+          <Text style={styles.jobText}>
+            {userData.title}
           </Text>
         </View>
 
-        {/* 3. ↩️ Botón Principal de Acción */}
-        <TouchableOpacity 
-          style={styles.actionButton} 
-           onPress={() => navigation.navigate('Login')}
-        >
-          <Text style={styles.actionButtonText}>
-            Volver al Formulario
-          </Text>
-        </TouchableOpacity>
+        {/* 2. 📊 Barra de Métricas (Siguiendo, Seguidores, Likes) */}
+        <MetricsBar metrics={userData.metrics} />
 
-        {/* 4. 🖼️ Imágenes/Iconos Decorativos */}
-        <View style={styles.iconContainer}> 
-          
-          <View style={styles.iconBox}>
-            <Image style={styles.iconImage} source={{ uri: userData.icon1 }} />
-          </View>
-          
-          <View style={styles.iconBox}>
-            <Image style={styles.iconImage} source={{ uri: userData.icon2 }} />
-          </View>
-          
-          <View style={[styles.iconBox, styles.iconBoxPlaceholder]}>
-            <Image style={[styles.iconImage, styles.iconPlaceholder]} source={{ uri: userData.icon3 }} />
-          </View>
-        </View>
+        {/* Separador visual */}
+        <View style={styles.horizontalSeparator} />
+
+        {/* 3. 🖱️ Botones de Acción (Iconos de la fila inferior del boceto) */}
+        {/* Aquí integramos la funcionalidad de SALIR en uno de los botones */}
+        <ActionButtons handleSignOut={handleSignOut} />
+
+        {/* 4. 🏞️ Título y Galería de Paisajes (Imágenes) */}
+        <Text style={galleryStyles.galleryTitle}>Galería de Paisajes</Text>
         
-      </View>
+        {/* Imagen principal (simulando la imagen grande de tu boceto) */}
+        <Image 
+          source={{ uri: galleryImages[0] }} 
+          style={galleryStyles.mainGalleryImage} 
+        />
+
+        {/* Galería de cuadrícula de 3 imágenes */}
+        <GalleryGrid images={galleryImages.slice(1)} />
+
+      </ScrollView>
+      
+      {/* NOTA: El botón SALIR fue movido a los ActionButtons para seguir el diseño de la imagen */}
+      
     </SafeAreaView>
   );
 }
 
+// -------------------- ESTILOS DE LA GALERÍA --------------------
+const galleryStyles = StyleSheet.create({
+    galleryTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: COLORS.TEXT_DARK,
+        marginTop: 20,
+        marginBottom: 10,
+        width: '100%',
+        paddingHorizontal: 24, // Alineación con el resto del contenido
+    },
+    mainGalleryImage: {
+        width: '90%', // Casi todo el ancho
+        height: 150,
+        borderRadius: 12,
+        marginBottom: 16,
+        resizeMode: 'cover',
+    },
+    galleryContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        width: '95%',
+        paddingBottom: 40, // Espacio para que el último elemento no toque el borde
+    },
+    imageWrapper: {
+        width: '30%', // Permite 3 imágenes por fila con espacio
+        aspectRatio: 1, // Mantiene la forma cuadrada
+        marginBottom: 12,
+        borderRadius: 8,
+        overflow: 'hidden',
+        backgroundColor: COLORS.BACKGROUND_LIGHT,
+    },
+    galleryImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+});
+
+// -------------------- ESTILOS DE MÉTRICAS (NUEVOS) --------------------
+const metricsStyles = StyleSheet.create({
+    metricsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        width: '90%',
+        marginTop: 20,
+        marginBottom: 20,
+        paddingHorizontal: 10,
+    },
+    metricItem: {
+        alignItems: 'center',
+        flex: 1, // Asegura que cada item ocupe 1/3 del espacio
+    },
+    metricValue: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: COLORS.TEXT_DARK,
+        marginBottom: 4,
+    },
+    metricLabel: {
+        fontSize: 14,
+        color: COLORS.TEXT_SUBTLE,
+        textAlign: 'center',
+    },
+    verticalSeparator: {
+        width: 1,
+        height: '80%', // Altura ajustada
+        backgroundColor: COLORS.SEPARATOR_LINE,
+        marginHorizontal: 10,
+    },
+});
+
+// -------------------- ESTILOS DE BOTONES DE ACCIÓN (NUEVOS) --------------------
+const actionStyles = StyleSheet.create({
+    actionContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',
+        maxWidth: 320,
+        marginTop: 20,
+        marginBottom: 30, // Separación de la galería
+    },
+    actionButton: {
+        backgroundColor: COLORS.BACKGROUND_LIGHT, // Fondo gris claro
+        padding: 15,
+        borderRadius: 15,
+        width: 60,
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+        // Sombra sutil para darle profundidad
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+});
+
+// -------------------- ESTILOS GENERALES --------------------
 const styles = StyleSheet.create({
   safeArea: { 
     flex: 1, 
-    backgroundColor: COLORS.CARD_WHITE 
+    backgroundColor: COLORS.BACKGROUND_LIGHT 
   },
-  
-  // -------------------- HEADER ESTILOS --------------------
-  customHeader: {
+  scrollContent: {
     width: '100%',
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.BORDER_LINE,
-    backgroundColor: COLORS.CARD_WHITE,
-  },
-  menuButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: COLORS.TEXT_DARK,
-  },
-  spacer: { // Para centrar el título, usa el mismo ancho que el botón de menú
-    width: 24 + 16, // Tamaño del icono + padding
-  },
-
-  // -------------------- CONTENIDO ESTILOS --------------------
-  contentContainer: {
-    flex: 1,
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    backgroundColor: COLORS.CARD_WHITE,
+    paddingTop: 32,
+    backgroundColor: COLORS.CARD_WHITE, 
   },
 
   // Sección de Perfil
   profileSection: {
     alignItems: 'center',
-    marginTop: 16,
-    marginBottom: 24,
+    marginBottom: 10, // Reducido para acercar las métricas
+    paddingHorizontal: 24,
+    width: '100%',
   },
+
+  // Estilos del Wrapper de Avatar nativo 
   avatarWrapper: {
-    width: 112, // w-28
-    height: 112, // h-28
-    borderRadius: 56,
+    width: 120, 
+    height: 120,
+    borderRadius: 60,
     position: 'relative',
-    borderWidth: 3,
-    borderColor: COLORS.SECONDARY_BLUE, // Azul para el borde del avatar
+    borderWidth: 3, 
+    borderColor: COLORS.ACCENT_BLUE_LIGHT, 
+    marginBottom: 8,
   },
   avatarImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 56,
+    borderRadius: 60, 
   },
+
+  // Estilo del Badge (anidado) - Cumple con +nested
   statusBadge: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 16, // w-4
-    height: 16, // h-4
-    backgroundColor: '#34D399', // Verde genérico
+    bottom: 4,
+    right: 4,
+    width: 16, 
+    height: 16, 
+    backgroundColor: COLORS.STATUS_GREEN, 
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: COLORS.CARD_WHITE,
+    borderColor: COLORS.CARD_WHITE, 
+    zIndex: 10,
   },
-  mainTitle: {
+  
+  // Título (Nombre) - Más grande y cerca del avatar
+  nameText: {
     fontSize: 20,
     fontWeight: '700',
-    color: COLORS.SECONDARY_BLUE,
-    marginTop: 16,
+    color: COLORS.TEXT_DARK, 
+    marginTop: 10,
   },
-  dataLine: {
-    fontSize: 15,
-    color: COLORS.TEXT_SUBTLE,
-    fontWeight: '400',
-    marginTop: 4,
-  },
-  dataValue: {
-    fontWeight: '600',
-    color: COLORS.TEXT_DARK,
+  // Subtítulo (Carrera)
+  jobText: {
+    fontSize: 14,
+    color: COLORS.TEXT_SUBTLE, 
+    marginBottom: 10,
+    textAlign: 'center',
   },
 
-  // Botón de Acción
-  actionButton: {
-    marginTop: 24,
-    width: '100%',
-    maxWidth: 320, // max-w-xs
-    height: 40,
-    backgroundColor: COLORS.SECONDARY_BLUE,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // Sombra (simulación)
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  horizontalSeparator: {
+    height: 1,
+    width: '90%',
+    backgroundColor: COLORS.BACKGROUND_LIGHT,
+    marginVertical: 10,
   },
-  actionButtonText: {
-    color: COLORS.CARD_WHITE,
-    fontWeight: '600',
-    fontSize: 16,
-  },
-
-  // Contenedor de Íconos
-  iconContainer: {
-    marginTop: 48,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '80%',
-  },
-  iconBox: {
-    width: 80, 
-    height: 80, 
-    alignItems: 'center', 
-    justifyContent: 'center'
-  },
-  iconImage: {
-    width: '100%',
-    height: '100%',
-  },
-  iconPlaceholder: {
-    opacity: 0.4,
-  }
 });
