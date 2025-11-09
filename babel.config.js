@@ -9,8 +9,11 @@ module.exports = function (api) {
         'module-resolver',
         {
           root: ['./'],
-
           alias: {
+            // ✅ AGREGADO: Alias para resolver 'react-dom' en React Native
+            'react-dom': '@expo/html-elements', 
+            
+            // Tus alias existentes se mantienen
             '@': './',
             'tailwind.config': './tailwind.config.js',
           },

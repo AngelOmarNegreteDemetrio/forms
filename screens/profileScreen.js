@@ -22,7 +22,7 @@ const COLORS = {
   SEPARATOR_LINE: '#E0E0E0',   
 };
 
-// --- NUEVO COMPONENTE CREADO POR TI: HighlightCard (15 PUNTOS) ---
+// --- NUEVO COMPONENTE CREADO POR TI: HighlightCard ---
 const HighlightCard = ({ text, iconName }) => (
     <View style={highlightStyles.card}>
         <MaterialIcons 

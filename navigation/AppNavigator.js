@@ -7,6 +7,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import LoginScreen from '../screens/LoginScreen';
 import Simulando from '../screens/Simulando';
 import ProfileScreen from '../screens/profileScreen';
+import CardScreen from '../screens/CardScreen';
 import DrawerContent from './DrawerContent';
 
 const Stack = createNativeStackNavigator();
@@ -45,7 +46,7 @@ function MainNavigator() {
             </TouchableOpacity>
           ),
         })}
-        
+
       />
 
       <Drawer.Screen
@@ -62,9 +63,25 @@ function MainNavigator() {
             </TouchableOpacity>
           ),
         })}
-        
+
       />
-      
+       <Drawer.Screen
+        name="CardScreen"
+        component={CardScreen}
+        options={({ navigation }) => ({
+          headerTitle: 'Angel Omar',
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.openDrawer()}
+              style={{ marginLeft: 15 }}
+            >
+              <Text style={{ fontSize: 24, color: '#fff' }}>☰</Text>
+            </TouchableOpacity>
+          ),
+        })}
+
+      />
+
     </Drawer.Navigator>
   );
 }
@@ -75,7 +92,8 @@ export default function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Main" component={MainNavigator} />
-             <Stack.Screen name="profileScreen" component={ProfileScreen} />
+              <Stack.Screen name="CardScreen" component={CardScreen} />
+        <Stack.Screen name="profileScreen" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

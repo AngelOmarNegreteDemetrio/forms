@@ -40,6 +40,12 @@ export default function DrawerContent(props) {
           labelStyle={styles.label} // Mantiene el estilo de la etiqueta (texto)
           style={styles.item} // Mantiene el estilo del contenedor del ítem
         />
+          <DrawerItem
+          label="CardScreen" // El texto del menú
+          onPress={() => navigation.navigate('CardScreen')} // La acción de navegación
+          labelStyle={styles.label} // Mantiene el estilo de la etiqueta (texto)
+          style={styles.item} // Mantiene el estilo del contenedor del ítem
+        />
       </View>
     </DrawerContentScrollView>
   );
