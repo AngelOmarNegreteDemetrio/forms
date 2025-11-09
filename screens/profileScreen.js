@@ -6,21 +6,42 @@ import {
   TouchableOpacity, 
   SafeAreaView, 
   StyleSheet,
-  ScrollView, // Usamos ScrollView para que la galería sea desplazable
+  ScrollView, 
 } from 'react-native'; 
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons'; 
 
 // --- PALETA DE COLORES REFINADA ---
 const COLORS = {
-  BACKGROUND_LIGHT: '#F8F8F8', // Fondo general de la pantalla
-  CARD_WHITE: '#FFFFFF',      // Fondo de contenedores (el centro de la pantalla)
-  TEXT_DARK: '#1E293B',       // Texto principal (negro/gris oscuro)
-  TEXT_SUBTLE: '#64748B',     // Texto secundario (Gris de Carrera)
-  ACCENT_BLUE_LIGHT: '#0A78D4', // Azul de botones y títulos (el azul principal)
-  STATUS_GREEN: '#34D399',      // Verde para el badge de estado
-  SEPARATOR_LINE: '#E0E0E0',   // Línea gris clara para separadores
+  BACKGROUND_LIGHT: '#F8F8F8', 
+  CARD_WHITE: '#FFFFFF',      
+  TEXT_DARK: '#1E293B',       
+  TEXT_SUBTLE: '#64748B',     
+  ACCENT_BLUE_LIGHT: '#0A78D4', 
+  STATUS_GREEN: '#34D399',      
+  SEPARATOR_LINE: '#E0E0E0',   
 };
+
+// --- NUEVO COMPONENTE CREADO POR TI: HighlightCard ---
+const HighlightCard = ({ text, iconName }) => (
+    <View style={highlightStyles.card}>
+        <MaterialIcons 
+            name={iconName} 
+            size={20} 
+            color={COLORS.ACCENT_BLUE_LIGHT} 
+            style={highlightStyles.icon}
+        />
+        <Text style={highlightStyles.text}>{text}</Text>
+    </View>
+);
+
+// --- COMPONENTE REEMPLAZO SEGURO (Mismo look and feel que el Badge de Gluestack) ---
+const CustomBadge = ({ text, actionColor }) => (
+    <View style={[styles.customBadgeContainer, { backgroundColor: actionColor }]}>
+        <Text style={styles.customBadgeText}>{text}</Text>
+    </View>
+);
+
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -41,16 +62,13 @@ export default function ProfileScreen() {
 
   // Imágenes para la sección de Galería (Imágenes de paisajes)
   const galleryImages = [
-    // Imagen principal grande (simulando una imagen de ancho completo)
     'https://independent-photo.com/wp-content/uploads/2022/02/Yifeng-Ding-1800x1192.jpeg',
-    // Tres imágenes pequeñas para la cuadrícula inferior
     'https://content.nationalgeographic.com.es/medio/2021/11/29/fotografo-de-paisajes-naturales-del-ano-segundo-premio_a32b2f66_2000x1594.jpg',
     'https://marketplace.canva.com/MADGDC4ks8E/1/thumbnail_large/canva-banff-landscapes-MADGDC4ks8E.jpg',
     'https://www.adobe.com/es/creativecloud/photography/discover/media_11cce67f3cd23e90370d599ea2e6e728b697f9120.png?width=750&format=png&optimize=medium',
-    // Añadimos más para forzar el scroll
-    'https://img.freepik.com/foto-gratis/paisaje-niebla-matutina-montanas-globos-aerostaticos-al-amanecer_335224-794.jpg?semt=ais_hybrid&w=740&q=80',
+    'https://img.freepik.com/foto- gratis/paisaje-niebla-matutina-montanas-globos-aerostaticos-al-amanecer_335224-794.jpg?semt=ais_hybrid&w=740&q=80',
     'https://thumbs.dreamstime.com/b/imagen-de-paisajes-hermosos-con-color-muy-bonito-y-backgroun-98492102.jpg',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGF8FwEQcN76kLjRHfGta7dnHHM0BgeFQ7Wg&s',
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   ];
 
   // Función para salir (navegación a 'Login' o donde corresponda)
@@ -61,10 +79,8 @@ export default function ProfileScreen() {
   // --- COMPONENTE DE LA GALERÍA (Grid de Imágenes) ---
   const GalleryGrid = ({ images }) => (
     <View style={galleryStyles.galleryContainer}>
-        {/* Usamos map para iterar sobre las imágenes */}
         {images.map((uri, index) => (
             <View key={index} style={galleryStyles.imageWrapper}>
-                {/* Componente Image - Cumple con la rúbrica */}
                 <Image 
                     source={{ uri }} 
                     style={galleryStyles.galleryImage} 
@@ -83,7 +99,6 @@ export default function ProfileScreen() {
                     <Text style={metricsStyles.metricValue}>{metric.value}</Text>
                     <Text style={metricsStyles.metricLabel}>{metric.label}</Text>
                 </View>
-                {/* Separador vertical, omitido para el último elemento */}
                 {index < metrics.length - 1 && (
                     <View style={metricsStyles.verticalSeparator} />
                 )}
@@ -95,17 +110,12 @@ export default function ProfileScreen() {
   // --- NUEVO COMPONENTE DE BOTONES DE ACCIÓN (Debajo de Métricas) ---
   const ActionButtons = ({ handleSignOut }) => (
     <View style={actionStyles.actionContainer}>
-        {/* Botón de Perfil (Simulado con MaterialIcons) */}
         <TouchableOpacity style={actionStyles.actionButton}>
             <MaterialIcons name="person" size={24} color={COLORS.ACCENT_BLUE_LIGHT} />
         </TouchableOpacity>
-
-        {/* Botón de Like/Favorito */}
         <TouchableOpacity style={actionStyles.actionButton}>
             <MaterialIcons name="favorite" size={24} color={COLORS.ACCENT_BLUE_LIGHT} />
         </TouchableOpacity>
-
-        {/* Botón SALIR (Usamos el ícono de logout para simular la acción del boceto) */}
         <TouchableOpacity 
             style={actionStyles.actionButton}
             onPress={handleSignOut}
@@ -118,8 +128,6 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}> 
-      
-      {/* ScrollView contiene todo el contenido deslizable */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
         {/* 1. 👤 Sección de Avatar y Datos de Perfil */}
@@ -130,18 +138,29 @@ export default function ProfileScreen() {
               style={styles.avatarImage}
               accessibilityLabel="Foto de perfil del usuario"
             />
-            {/* Badge Verde de Estado (Anidado, cumple con el requisito +nested) */}
             <View style={styles.statusBadge} />
           </View>
 
-          {/* Nombre y Datos de usuario, centrados como en el boceto */}
           <Text style={styles.nameText}>
             {userData.name}
           </Text>
           <Text style={styles.jobText}>
             {userData.title}
           </Text>
+
+          {/* COMPONENTE BADGE DE GLUESTACK */}
+          <CustomBadge 
+            text="CERTIFICADO" 
+            actionColor="#10B981"
+          />
         </View>
+
+        {/* INTEGRACIÓN DEL COMPONENTE ADICIONAL CREADO POR mi  */}
+        <HighlightCard 
+            text="Apasionado por el desarrollo móvil y React Native."
+            iconName="code"
+        />
+        {/* ------------------------------------------------------------- */}
 
         {/* 2. 📊 Barra de Métricas (Siguiendo, Seguidores, Likes) */}
         <MetricsBar metrics={userData.metrics} />
@@ -150,13 +169,11 @@ export default function ProfileScreen() {
         <View style={styles.horizontalSeparator} />
 
         {/* 3. 🖱️ Botones de Acción (Iconos de la fila inferior del boceto) */}
-        {/* Aquí integramos la funcionalidad de SALIR en uno de los botones */}
         <ActionButtons handleSignOut={handleSignOut} />
 
         {/* 4. 🏞️ Título y Galería de Paisajes (Imágenes) */}
         <Text style={galleryStyles.galleryTitle}>Galería de Paisajes</Text>
         
-        {/* Imagen principal (simulando la imagen grande de tu boceto) */}
         <Image 
           source={{ uri: galleryImages[0] }} 
           style={galleryStyles.mainGalleryImage} 
@@ -167,11 +184,32 @@ export default function ProfileScreen() {
 
       </ScrollView>
       
-      {/* NOTA: El botón SALIR fue movido a los ActionButtons para seguir el diseño de la imagen */}
-      
     </SafeAreaView>
   );
 }
+
+// -------------------- ESTILOS DEL COMPONENTE ADICIONAL (HighlightCard) --------------------
+const highlightStyles = StyleSheet.create({
+    card: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: COLORS.BACKGROUND_LIGHT, 
+        borderRadius: 12,
+        padding: 15,
+        marginHorizontal: 24, 
+        marginTop: 10,
+        marginBottom: 20, 
+        width: '90%',
+    },
+    icon: {
+        marginRight: 10,
+    },
+    text: {
+        fontSize: 14,
+        color: COLORS.TEXT_DARK,
+        flex: 1, 
+    },
+});
 
 // -------------------- ESTILOS DE LA GALERÍA --------------------
 const galleryStyles = StyleSheet.create({
@@ -182,10 +220,10 @@ const galleryStyles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 10,
         width: '100%',
-        paddingHorizontal: 24, // Alineación con el resto del contenido
+        paddingHorizontal: 24, 
     },
     mainGalleryImage: {
-        width: '90%', // Casi todo el ancho
+        width: '90%', 
         height: 150,
         borderRadius: 12,
         marginBottom: 16,
@@ -196,11 +234,11 @@ const galleryStyles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'space-around',
         width: '95%',
-        paddingBottom: 40, // Espacio para que el último elemento no toque el borde
+        paddingBottom: 40, 
     },
     imageWrapper: {
-        width: '30%', // Permite 3 imágenes por fila con espacio
-        aspectRatio: 1, // Mantiene la forma cuadrada
+        width: '30%', 
+        aspectRatio: 1, 
         marginBottom: 12,
         borderRadius: 8,
         overflow: 'hidden',
@@ -213,20 +251,18 @@ const galleryStyles = StyleSheet.create({
     },
 });
 
-// -------------------- ESTILOS DE MÉTRICAS (NUEVOS) --------------------
+// -------------------- ESTILOS DE MÉTRICAS --------------------
 const metricsStyles = StyleSheet.create({
     metricsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
         width: '90%',
-        marginTop: 20,
-        marginBottom: 20,
         paddingHorizontal: 10,
     },
     metricItem: {
         alignItems: 'center',
-        flex: 1, // Asegura que cada item ocupe 1/3 del espacio
+        flex: 1, 
     },
     metricValue: {
         fontSize: 18,
@@ -241,13 +277,13 @@ const metricsStyles = StyleSheet.create({
     },
     verticalSeparator: {
         width: 1,
-        height: '80%', // Altura ajustada
+        height: '80%', 
         backgroundColor: COLORS.SEPARATOR_LINE,
         marginHorizontal: 10,
     },
 });
 
-// -------------------- ESTILOS DE BOTONES DE ACCIÓN (NUEVOS) --------------------
+// -------------------- ESTILOS DE BOTONES DE ACCIÓN --------------------
 const actionStyles = StyleSheet.create({
     actionContainer: {
         flexDirection: 'row',
@@ -255,17 +291,16 @@ const actionStyles = StyleSheet.create({
         width: '100%',
         maxWidth: 320,
         marginTop: 20,
-        marginBottom: 30, // Separación de la galería
+        marginBottom: 30, 
     },
     actionButton: {
-        backgroundColor: COLORS.BACKGROUND_LIGHT, // Fondo gris claro
+        backgroundColor: COLORS.BACKGROUND_LIGHT, 
         padding: 15,
         borderRadius: 15,
         width: 60,
         height: 60,
         alignItems: 'center',
         justifyContent: 'center',
-        // Sombra sutil para darle profundidad
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -290,7 +325,7 @@ const styles = StyleSheet.create({
   // Sección de Perfil
   profileSection: {
     alignItems: 'center',
-    marginBottom: 10, // Reducido para acercar las métricas
+    marginBottom: 10, 
     paddingHorizontal: 24,
     width: '100%',
   },
@@ -336,8 +371,22 @@ const styles = StyleSheet.create({
   jobText: {
     fontSize: 14,
     color: COLORS.TEXT_SUBTLE, 
-    marginBottom: 10,
+    marginBottom: 5, 
     textAlign: 'center',
+  },
+
+  // 👇 ESTILOS PARA EL BADGE NATIVO (Simula Gluestack)
+  customBadgeContainer: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8, 
+    marginTop: 5,
+    marginBottom: 15,
+  },
+  customBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#fff', // Texto blanco para contraste con el fondo verde
   },
 
   horizontalSeparator: {
