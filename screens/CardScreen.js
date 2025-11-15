@@ -95,7 +95,7 @@ export default function CardScreen({ navigation }) {
 
           <VStack mb="$6">
             <Heading size="md" mb="$3" color="#333333">
-              Hello Kitty
+              sueter
             </Heading>
             <Text size="sm" color="#555555">
               Marca y personaje ficticio producido por la compañía japonesa Sanrio, que ha sido durante mucho tiempo la más popular de esta compañía.
