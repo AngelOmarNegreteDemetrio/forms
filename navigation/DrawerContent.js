@@ -1,70 +1,61 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import { View, Text, StyleSheet } from 'react-native';
+// Importamos las utilidades de React Navigation para construir el menú personalizado.
+import { 
+    DrawerContentScrollView, 
+    DrawerItemList,
+    DrawerContentComponentProps // Tipo para las props del componente
+} from '@react-navigation/drawer';
 
-export default function DrawerContent(props) {
-  const { navigation, state } = props;
-
-  const currentRoute = state?.routeNames[state?.index];
-
-  const handleLogout = () => {
-    const rootNav = navigation.getParent();
-    if (rootNav) rootNav.replace('Login');
-  };
-
+// Este es el componente que se renderizará dentro del menú lateral.
+// Debe exportarse como default para que la importación en _layout.tsx funcione.
+// CORRECCIÓN: El componente ahora recibe 'props' como argumento con su tipo.
+export default function MenuContent({...props}) {
   return (
-    <DrawerContentScrollView {...props} contentContainerStyle={styles.container}>
-      <View style={styles.items}>
-        <DrawerItem
-          label="Inicio"
-          focused={currentRoute === 'Simulando'}
-          onPress={() => navigation.navigate('Simulando')}
-          labelStyle={[
-            styles.label,
-            currentRoute === 'Simulando' && styles.activeLabel,
-          ]}
-          style={[
-            styles.item,
-            currentRoute === 'Simulando' && styles.activeItem,
-          ]}
-        />
-        <DrawerItem
-          label="Cerrar sesión"
-          onPress={handleLogout}
-          labelStyle={styles.label}
-          style={styles.item}
-        />
-        <DrawerItem
-          label="Profile" // El texto del menú
-          onPress={() => navigation.navigate('ProfileScreen')} // La acción de navegación
-          labelStyle={styles.label} // Mantiene el estilo de la etiqueta (texto)
-          style={styles.item} // Mantiene el estilo del contenedor del ítem
-        />
-          <DrawerItem
-          label="CardScreen" // El texto del menú
-          onPress={() => navigation.navigate('CardScreen')} // La acción de navegación
-          labelStyle={styles.label} // Mantiene el estilo de la etiqueta (texto)
-          style={styles.item} // Mantiene el estilo del contenedor del ítem
-        />
+    <DrawerContentScrollView {...props}>
+      {/* Zona Superior del Menú: Personalización visual para el encabezado */}
+      <View style={styles.header}>
+        <Text style={styles.headerText}>College App</Text>
+        <Text style={styles.headerSubtext}>Bienvenido, Usuario</Text>
+      </View>
+      
+      {/* Renderiza los elementos de navegación definidos en Drawer.Screen en _layout.tsx */}
+      <DrawerItemList {...props} />
+      
+      {/* Pie de página o área de información adicional */}
+      <View style={styles.footer}>
+        {/* Aquí puedes añadir botones de Cerrar Sesión u otra información */}
+        <Text style={styles.footerText}>Versión 1.0.0</Text>
       </View>
     </DrawerContentScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  items: { marginTop: 20 },
-  item: { borderRadius: 12 },
-  activeItem: {
-    backgroundColor: '#1E40AF',
+  header: {
+    padding: 20,
+    backgroundColor: '#E83E4C', // Color rojo del header
+    marginBottom: 10,
   },
-  label: {
-    color: '#1E3A8A',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  activeLabel: {
-    color: '#fff',
+  headerText: {
+    fontSize: 22,
     fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  headerSubtext: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginTop: 4,
+  },
+  footer: {
+    padding: 20,
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  footerText: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
   },
 });

@@ -9,6 +9,7 @@ import Simulando from '../screens/Simulando';
 import ProfileScreen from '../screens/profileScreen';
 import CardScreen from '../screens/CardScreen';
 import DrawerContent from './DrawerContent';
+import firebase from '../screens/firebase';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -68,6 +69,23 @@ function MainNavigator() {
        <Drawer.Screen
         name="CardScreen"
         component={CardScreen}
+        options={({ navigation }) => ({
+          headerTitle: 'Angel Omar',
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.openDrawer()}
+              style={{ marginLeft: 15 }}
+            >
+              <Text style={{ fontSize: 24, color: '#fff' }}>☰</Text>
+            </TouchableOpacity>
+          ),
+        })}
+
+      />
+
+      <Drawer.Screen
+        name="firebase"
+        component={firebase}
         options={({ navigation }) => ({
           headerTitle: 'Angel Omar',
           headerLeft: () => (
